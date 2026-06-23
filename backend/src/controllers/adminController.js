@@ -1,6 +1,4 @@
 const ExcelJS = require('exceljs');
-const fs = require('fs');
-const path = require('path');
 const User = require('../models/User');
 const Student = require('../models/Student');
 const Faculty = require('../models/Faculty');
@@ -14,9 +12,8 @@ exports.importStudents = async (req, res, next) => {
       return res.status(400).json({ success: false, message: 'Please upload an Excel file' });
     }
 
-    const filePath = req.file.path;
     const workbook = new ExcelJS.Workbook();
-    await workbook.xlsx.readFile(filePath);
+    await workbook.xlsx.load(req.file.buffer);
     const worksheet = workbook.worksheets[0];
 
     // Build header map from first row
@@ -33,9 +30,6 @@ exports.importStudents = async (req, res, next) => {
       });
       rows.push(obj);
     });
-
-    // Clean up local file after reading
-    fs.unlinkSync(filePath);
 
     if (rows.length === 0) {
       return res.status(400).json({ success: false, message: 'Excel file is empty' });
@@ -145,9 +139,8 @@ exports.importFaculty = async (req, res, next) => {
       return res.status(400).json({ success: false, message: 'Please upload an Excel file' });
     }
 
-    const filePath = req.file.path;
     const workbook = new ExcelJS.Workbook();
-    await workbook.xlsx.readFile(filePath);
+    await workbook.xlsx.load(req.file.buffer);
     const worksheet = workbook.worksheets[0];
 
     const headerRow = worksheet.getRow(1).values.slice(1);
@@ -163,9 +156,6 @@ exports.importFaculty = async (req, res, next) => {
       });
       rows.push(obj);
     });
-
-    // Clean up local file
-    fs.unlinkSync(filePath);
 
     if (rows.length === 0) {
       return res.status(400).json({ success: false, message: 'Excel file is empty' });

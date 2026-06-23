@@ -1,3 +1,4 @@
+const { put } = require('@vercel/blob');
 const Notice = require('../models/Notice');
 const Notification = require('../models/Notification');
 const User = require('../models/User');
@@ -20,7 +21,8 @@ exports.createNotice = async (req, res, next) => {
     }
 
     if (req.file) {
-      noticeData.attachmentUrl = `/uploads/${req.file.filename}`;
+      const blob = await put(req.file.originalname, req.file.buffer, { access: 'public', contentType: req.file.mimetype });
+      noticeData.attachmentUrl = blob.url;
       noticeData.attachmentName = req.file.originalname;
     }
 
@@ -100,7 +102,8 @@ exports.updateNotice = async (req, res, next) => {
     }
 
     if (req.file) {
-      notice.attachmentUrl = `/uploads/${req.file.filename}`;
+      const blob = await put(req.file.originalname, req.file.buffer, { access: 'public', contentType: req.file.mimetype });
+      notice.attachmentUrl = blob.url;
       notice.attachmentName = req.file.originalname;
     }
 

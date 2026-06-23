@@ -1,3 +1,4 @@
+const { put } = require('@vercel/blob');
 const Task = require('../models/Task');
 const Group = require('../models/Group');
 const Faculty = require('../models/Faculty');
@@ -34,7 +35,8 @@ exports.assignTask = async (req, res, next) => {
     };
 
     if (req.file) {
-      taskData.deliverableUrl = `/uploads/${req.file.filename}`;
+      const blob = await put(req.file.originalname, req.file.buffer, { access: 'public', contentType: req.file.mimetype });
+      taskData.deliverableUrl = blob.url;
       taskData.deliverableName = req.file.originalname;
     }
 
@@ -90,7 +92,8 @@ exports.updateTaskProgress = async (req, res, next) => {
     }
 
     if (req.file) {
-      task.deliverableUrl = `/uploads/${req.file.filename}`;
+      const blob = await put(req.file.originalname, req.file.buffer, { access: 'public', contentType: req.file.mimetype });
+      task.deliverableUrl = blob.url;
       task.deliverableName = req.file.originalname;
       task.status = 'under_review';
       task.progressPercentage = 100;

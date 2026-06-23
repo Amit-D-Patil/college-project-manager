@@ -1,3 +1,4 @@
+const { put } = require('@vercel/blob');
 const Message = require('../models/Message');
 const User = require('../models/User');
 const Student = require('../models/Student');
@@ -22,7 +23,8 @@ exports.sendMessage = async (req, res, next) => {
     if (groupId) msgData.groupId = groupId;
 
     if (req.file) {
-      msgData.attachmentUrl = `/uploads/${req.file.filename}`;
+      const blob = await put(req.file.originalname, req.file.buffer, { access: 'public', contentType: req.file.mimetype });
+      msgData.attachmentUrl = blob.url;
       msgData.attachmentName = req.file.originalname;
     }
 

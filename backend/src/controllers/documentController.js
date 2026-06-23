@@ -1,3 +1,4 @@
+const { put } = require('@vercel/blob');
 const Document = require('../models/Document');
 const Student = require('../models/Student');
 const Group = require('../models/Group');
@@ -18,7 +19,12 @@ exports.uploadDocument = async (req, res, next) => {
       return res.status(400).json({ success: false, message: 'You must belong to a group to upload files' });
     }
 
-    const fileUrl = `/uploads/${req.file.filename}`;
+    const blob = await put(req.file.originalname, req.file.buffer, {
+      access: 'public',
+      contentType: req.file.mimetype,
+    });
+
+    const fileUrl = blob.url;
     const fileName = req.file.originalname;
 
     // Check if document of this type already exists for this group

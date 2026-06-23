@@ -1,3 +1,4 @@
+const { put } = require('@vercel/blob');
 const Project = require('../models/Project');
 const Group = require('../models/Group');
 const Student = require('../models/Student');
@@ -248,20 +249,28 @@ exports.submitFinalProject = async (req, res, next) => {
 
     if (req.files) {
       if (req.files.report) {
-        finalSubmission.reportUrl = `/uploads/${req.files.report[0].filename}`;
-        finalSubmission.reportName = req.files.report[0].originalname;
+        const f = req.files.report[0];
+        const b = await put(f.originalname, f.buffer, { access: 'public', contentType: f.mimetype });
+        finalSubmission.reportUrl = b.url;
+        finalSubmission.reportName = f.originalname;
       }
       if (req.files.sourceCode) {
-        finalSubmission.sourceCodeUrl = `/uploads/${req.files.sourceCode[0].filename}`;
-        finalSubmission.sourceCodeName = req.files.sourceCode[0].originalname;
+        const f = req.files.sourceCode[0];
+        const b = await put(f.originalname, f.buffer, { access: 'public', contentType: f.mimetype });
+        finalSubmission.sourceCodeUrl = b.url;
+        finalSubmission.sourceCodeName = f.originalname;
       }
       if (req.files.researchPaper) {
-        finalSubmission.researchPaperUrl = `/uploads/${req.files.researchPaper[0].filename}`;
-        finalSubmission.researchPaperName = req.files.researchPaper[0].originalname;
+        const f = req.files.researchPaper[0];
+        const b = await put(f.originalname, f.buffer, { access: 'public', contentType: f.mimetype });
+        finalSubmission.researchPaperUrl = b.url;
+        finalSubmission.researchPaperName = f.originalname;
       }
       if (req.files.presentation) {
-        finalSubmission.presentationUrl = `/uploads/${req.files.presentation[0].filename}`;
-        finalSubmission.presentationName = req.files.presentation[0].originalname;
+        const f = req.files.presentation[0];
+        const b = await put(f.originalname, f.buffer, { access: 'public', contentType: f.mimetype });
+        finalSubmission.presentationUrl = b.url;
+        finalSubmission.presentationName = f.originalname;
       }
     }
 
