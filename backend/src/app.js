@@ -48,9 +48,12 @@ app.use('/api/messages', messageRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/reports', reportRoutes);
 
-// Root route
-app.get('/', (req, res) => {
-  res.status(200).json({ success: true, message: 'College Project Management System API is running.' });
+// Serve React frontend build
+app.use(express.static(path.join(__dirname, '../../frontend-build')));
+
+// Catch-all: serve index.html for client-side routing
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../../frontend-build', 'index.html'));
 });
 
 // Centralized Error Handler
