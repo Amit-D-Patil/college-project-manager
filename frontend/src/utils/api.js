@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Set base URL for backend API
 const API = axios.create({
-  baseURL: VITE_API_URL,
+  baseURL: "https://college-project-manager-be.vercel.app/api",
   timeout: 30000,
 });
 
