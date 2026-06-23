@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Set base URL for backend API
 const API = axios.create({
-  baseURL: 'http://localhost:5000/api',
+  baseURL: 'https://web-new-57xg.onrender.com/api',
   timeout: 30000,
 });
 
