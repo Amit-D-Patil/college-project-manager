@@ -2,19 +2,20 @@ const app = require('./app');
 const connectDB = require('./config/db');
 require('dotenv').config();
 
-const PORT = process.env.PORT || 5000;
-
 // Connect to MongoDB
 connectDB();
 
-// Start Server
-const server = app.listen(PORT, () => {
-  console.log(`Server is running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
-});
+// Only start the HTTP server when run directly (local dev), not on Vercel
+if (require.main === module) {
+  const PORT = process.env.PORT || 5000;
+  const server = app.listen(PORT, () => {
+    console.log(`Server is running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
+  });
 
-// Handle unhandled promise rejections
-process.on('unhandledRejection', (err, promise) => {
-  console.error(`Unhandled Rejection Error: ${err.message}`);
-  // Close server & exit process
-  server.close(() => process.exit(1));
-});
+  process.on('unhandledRejection', (err) => {
+    console.error(`Unhandled Rejection Error: ${err.message}`);
+    server.close(() => process.exit(1));
+  });
+}
+
+module.exports = app;
